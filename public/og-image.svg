@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#1e40af"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e293b"/>
+      <stop offset="100%" style="stop-color:#0f172a"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  
+  <!-- Decorative Elements -->
+  <circle cx="100" cy="530" r="200" fill="#38bdf8" opacity="0.1"/>
+  <circle cx="1100" cy="100" r="150" fill="#22d3ee" opacity="0.1"/>
+  
+  <!-- Content Card -->
+  <rect x="60" y="60" width="1080" height="510" rx="24" fill="url(#card)" opacity="0.6"/>
+  <rect x="60" y="60" width="1080" height="510" rx="24" fill="none" stroke="#38bdf8" stroke-width="2" opacity="0.3"/>
+  
+  <!-- Logo/Icon -->
+  <text x="120" y="160" font-size="80" fill="white">❄️</text>
+  
+  <!-- Title -->
+  <text x="220" y="155" font-family="system-ui, -apple-system, sans-serif" font-size="52" font-weight="bold" fill="white">Alaska Climate Explorer</text>
+  
+  <!-- Subtitle -->
+  <text x="120" y="220" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#94a3b8">Real-time weather • Historical trends • Climate projections</text>
+  
+  <!-- Feature Cards -->
+  <!-- Weather -->
+  <rect x="120" y="280" width="220" height="160" rx="12" fill="#1e293b"/>
+  <text x="140" y="320" font-size="36">🌡️</text>
+  <text x="140" y="360" font-family="system-ui, sans-serif" font-size="18" font-weight="bold" fill="white">Live Weather</text>
+  <text x="140" y="385" font-family="system-ui, sans-serif" font-size="14" fill="#64748b">7-day forecasts</text>
+  <text x="140" y="420" font-family="system-ui, sans-serif" font-size="28" font-weight="bold" fill="#22d3ee">-15°F</text>
+  
+  <!-- Historical -->
+  <rect x="370" y="280" width="220" height="160" rx="12" fill="#1e293b"/>
+  <text x="390" y="320" font-size="36">📊</text>
+  <text x="390" y="360" font-family="system-ui, sans-serif" font-size="18" font-weight="bold" fill="white">Historical Data</text>
+  <text x="390" y="385" font-family="system-ui, sans-serif" font-size="14" fill="#64748b">Since 1949</text>
+  <text x="390" y="420" font-family="system-ui, sans-serif" font-size="28" font-weight="bold" fill="#a78bfa">76 years</text>
+  
+  <!-- Sea Ice -->
+  <rect x="620" y="280" width="220" height="160" rx="12" fill="#1e293b"/>
+  <text x="640" y="320" font-size="36">🧊</text>
+  <text x="640" y="360" font-family="system-ui, sans-serif" font-size="18" font-weight="bold" fill="white">Sea Ice</text>
+  <text x="640" y="385" font-family="system-ui, sans-serif" font-size="14" fill="#64748b">Arctic monitoring</text>
+  <text x="640" y="420" font-family="system-ui, sans-serif" font-size="28" font-weight="bold" fill="#38bdf8">-35%</text>
+  
+  <!-- Permafrost -->
+  <rect x="870" y="280" width="220" height="160" rx="12" fill="#1e293b"/>
+  <text x="890" y="320" font-size="36">🏔️</text>
+  <text x="890" y="360" font-family="system-ui, sans-serif" font-size="18" font-weight="bold" fill="white">Permafrost</text>
+  <text x="890" y="385" font-family="system-ui, sans-serif" font-size="14" fill="#64748b">Ground temps</text>
+  <text x="890" y="420" font-family="system-ui, sans-serif" font-size="28" font-weight="bold" fill="#f97316">7 stations</text>
+
+  <!-- Data Sources -->
+  <text x="120" y="520" font-family="system-ui, sans-serif" font-size="16" fill="#64748b">Data: NOAA • NSIDC • Alaska Climate Research Center • SNAP/UAF</text>
+  
+  <!-- URL -->
+  <text x="920" y="520" font-family="system-ui, sans-serif" font-size="16" fill="#38bdf8">alaska-climate.netlify.app</text>
+</svg>

@@ -4,11 +4,98 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Primary SEO Meta Tags -->
+  <title>Alaska Climate Explorer | Live Weather, Sea Ice & Climate Data</title>
+  <meta name="title" content="Alaska Climate Explorer | Live Weather, Sea Ice & Climate Data">
   <meta name="description"
-    content="Explore Alaska's weather patterns, historical climate data, and interactive climate change scenarios">
-  <meta name="keywords" content="Alaska, climate, weather, climate change, permafrost, sea ice, IPCC">
-  <title>Alaska Climate Explorer</title>
+    content="Interactive dashboard for Alaska's climate data: real-time weather, historical trends since 1949, permafrost monitoring, Arctic sea ice tracking, and IPCC climate scenarios through 2100.">
+  <meta name="keywords"
+    content="Alaska weather, Alaska climate, Arctic sea ice, permafrost monitoring, climate change Alaska, IPCC scenarios, Alaska temperature trends, Fairbanks weather, Anchorage forecast, Arctic climate data">
+  <meta name="author" content="Alaska Climate Explorer">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="English">
+  <meta name="revisit-after" content="7 days">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://alaska-climate.netlify.app/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://alaska-climate.netlify.app/">
+  <meta property="og:title" content="Alaska Climate Explorer | Live Weather, Sea Ice & Climate Data">
+  <meta property="og:description"
+    content="Interactive dashboard for Alaska's climate data: real-time weather, historical trends, permafrost monitoring, Arctic sea ice tracking, and IPCC climate scenarios.">
+  <meta property="og:image" content="https://alaska-climate.netlify.app/og-image.svg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Alaska Climate Explorer">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://alaska-climate.netlify.app/">
+  <meta name="twitter:title" content="Alaska Climate Explorer | Live Weather, Sea Ice & Climate Data">
+  <meta name="twitter:description"
+    content="Interactive dashboard for Alaska's climate data: real-time weather, historical trends, permafrost monitoring, Arctic sea ice tracking, and IPCC climate scenarios.">
+  <meta name="twitter:image" content="https://alaska-climate.netlify.app/og-image.svg">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#0f172a">
+  <meta name="msapplication-TileColor" content="#0f172a">
+
+  <!-- Preconnect for Performance -->
+  <link rel="preconnect" href="https://api.weather.gov">
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="preconnect" href="https://tile.openstreetmap.org">
+  <link rel="dns-prefetch" href="https://api.weather.gov">
+
+  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Alaska Climate Explorer",
+    "description": "Interactive dashboard for exploring Alaska's weather patterns, historical climate data, permafrost monitoring, Arctic sea ice trends, and climate change scenarios.",
+    "url": "https://alaska-climate.netlify.app/",
+    "applicationCategory": "EnvironmentalApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "Alaska Climate Explorer"
+    },
+    "about": [
+      {
+        "@type": "Thing",
+        "name": "Climate Change",
+        "description": "Long-term shifts in temperatures and weather patterns in Alaska"
+      },
+      {
+        "@type": "Thing",
+        "name": "Arctic Sea Ice",
+        "description": "Monitoring of Arctic sea ice extent and trends"
+      },
+      {
+        "@type": "Thing",
+        "name": "Permafrost",
+        "description": "Ground that remains frozen for at least two consecutive years"
+      }
+    ],
+    "keywords": "Alaska, climate, weather, Arctic, sea ice, permafrost, climate change, IPCC, temperature, precipitation"
+  }
+  </script>
 </head>
 
 <body>

@@ -1,0 +1,11 @@
+# Alaska Climate Explorer - robots.txt
+# https://alaska-climate.netlify.app
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://alaska-climate.netlify.app/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
