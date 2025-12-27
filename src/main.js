@@ -16,11 +16,11 @@ import {
 } from './utils/chartHelpers.js';
 
 // Global state
-let currentView = 'live-weather';
+let currentView = 'scenarios';
 let weatherMap = null;
 let permafrostMap = null;
 let charts = {};
-let currentScenario = 'SSP1-2.6';
+let currentScenario = 'SSP2-4.5';
 let customScenarioData = null;
 let animationInterval = null;
 let temperatureUnit = 'F'; // 'F' for Fahrenheit, 'C' for Celsius
@@ -418,8 +418,8 @@ function initScenariosView() {
         }
     });
 
-    // Load initial scenario
-    updateScenarioDisplay(2026);
+    // Load initial scenario - SSP2-4.5 at Year 2030
+    updateScenarioDisplay(2030);
 }
 
 function updateCustomScenario() {

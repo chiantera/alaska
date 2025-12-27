@@ -388,6 +388,13 @@ select:focus {
   box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.2);
 }
 
+/* Style dropdown options for readability */
+select option {
+  background: #1a2332;
+  color: #ffffff;
+  padding: var(--space-sm);
+}
+
 /* ===== WEATHER DISPLAY ===== */
 .weather-display {
   display: flex;
