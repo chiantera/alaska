@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Explore Alaska's weather patterns, historical climate data, and interactive climate change scenarios">
+  <meta name="keywords" content="Alaska, climate, weather, climate change, permafrost, sea ice, IPCC">
+  <title>Alaska Climate Explorer</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+
+<body>
+  <div id="app">
+    <header class="header">
+      <div class="header-content">
+        <h1 class="logo">
+          <span class="logo-icon">❄️</span>
+          Alaska Climate Explorer
+        </h1>
+        <nav class="nav">
+          <button class="nav-btn active" data-view="live-weather">Live Weather</button>
+          <button class="nav-btn" data-view="historical">Historical Data</button>
+          <button class="nav-btn" data-view="scenarios">Climate Scenarios</button>
+          <button class="nav-btn" data-view="permafrost">Permafrost</button>
+          <button class="nav-btn" data-view="sea-ice">Sea Ice</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- Live Weather View -->
+      <section id="live-weather" class="view active">
+        <div class="view-header">
+          <h2>Live Weather & Short-term Forecast</h2>
+          <p class="subtitle">Current conditions and 7-day forecasts across Alaska</p>
+        </div>
+        <div class="content-grid">
+          <div class="map-container">
+            <div id="weather-map"></div>
+            <div class="location-selector">
+              <label for="location-select">Select Location:</label>
+              <select id="location-select">
+                <option value="61.2181,-149.9003">Anchorage</option>
+                <option value="64.8378,-147.7164">Fairbanks</option>
+                <option value="58.3019,-134.4197">Juneau</option>
+                <option value="55.3422,-131.6461">Ketchikan</option>
+                <option value="71.2906,-156.7886">Barrow (Utqiaġvik)</option>
+                <option value="66.8983,-162.5989">Nome</option>
+                <option value="57.7900,-152.4072">Kodiak</option>
+              </select>
+            </div>
+          </div>
+          <div class="weather-display">
+            <div class="current-weather card">
+              <h3>Current Conditions</h3>
+              <div id="current-conditions" class="loading">Loading...</div>
+            </div>
+            <div class="forecast card">
+              <h3>7-Day Forecast</h3>
+              <div id="forecast-display" class="loading">Loading...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Historical Weather View -->
+      <section id="historical" class="view">
+        <div class="view-header">
+          <h2>Historical Weather Trends (1949-Present)</h2>
+          <p class="subtitle">Compare past and present climate patterns</p>
+        </div>
+        <div class="controls card">
+          <div class="control-group">
+            <label for="time-range">Time Range:</label>
+            <select id="time-range">
+              <option value="10">Last 10 Years</option>
+              <option value="25">Last 25 Years</option>
+              <option value="50" selected>Last 50 Years</option>
+              <option value="all">All Time (1949-Present)</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label for="station-select">Station:</label>
+            <select id="station-select">
+              <option value="anchorage">Anchorage</option>
+              <option value="fairbanks">Fairbanks</option>
+              <option value="juneau">Juneau</option>
+            </select>
+          </div>
+        </div>
+        <div class="charts-grid">
+          <div class="chart-container card">
+            <h3>Temperature Trends</h3>
+            <canvas id="temp-chart"></canvas>
+          </div>
+          <div class="chart-container card">
+            <h3>Precipitation Patterns</h3>
+            <canvas id="precip-chart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Climate Scenarios View -->
+      <section id="scenarios" class="view">
+        <div class="view-header">
+          <h2>Climate Change Scenarios (2026-2100)</h2>
+          <p class="subtitle">Explore how different emission pathways impact Alaska's future</p>
+        </div>
+
+        <div class="scenario-controls card">
+          <div class="scenario-selector">
+            <h3>Select Scenario</h3>
+            <div class="scenario-buttons">
+              <button class="scenario-btn active" data-scenario="SSP1-2.6">
+                <span class="scenario-name">SSP1-2.6</span>
+                <span class="scenario-desc">Low Emissions</span>
+              </button>
+              <button class="scenario-btn" data-scenario="SSP2-4.5">
+                <span class="scenario-name">SSP2-4.5</span>
+                <span class="scenario-desc">Moderate</span>
+              </button>
+              <button class="scenario-btn" data-scenario="SSP3-7.0">
+                <span class="scenario-name">SSP3-7.0</span>
+                <span class="scenario-desc">High Emissions</span>
+              </button>
+              <button class="scenario-btn" data-scenario="SSP5-8.5">
+                <span class="scenario-name">SSP5-8.5</span>
+                <span class="scenario-desc">Very High</span>
+              </button>
+              <button class="scenario-btn" data-scenario="custom">
+                <span class="scenario-name">Custom</span>
+                <span class="scenario-desc">Build Your Own</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="custom-controls" class="custom-controls" style="display: none;">
+            <h4>Custom Scenario Builder</h4>
+            <div class="slider-group">
+              <label for="temp-increase">Global Temperature Increase by 2100: <span id="temp-value">2.5°C</span></label>
+              <input type="range" id="temp-increase" min="1.5" max="5" step="0.1" value="2.5">
+            </div>
+            <div class="slider-group">
+              <label for="emission-reduction">Emission Reduction Start Year: <span
+                  id="emission-value">2040</span></label>
+              <input type="range" id="emission-reduction" min="2026" max="2080" step="5" value="2040">
+            </div>
+          </div>
+
+          <div class="timeline-control">
+            <label for="year-slider">Year: <span id="year-display">2026</span></label>
+            <input type="range" id="year-slider" min="2026" max="2100" step="1" value="2026">
+            <button id="play-animation" class="play-btn">▶ Play Animation</button>
+          </div>
+        </div>
+
+        <div class="impacts-grid">
+          <div class="impact-card card">
+            <h3>🌡️ Temperature Change</h3>
+            <div class="impact-value" id="temp-impact">+0.0°C</div>
+            <canvas id="temp-scenario-chart"></canvas>
+          </div>
+          <div class="impact-card card">
+            <h3>🌧️ Precipitation</h3>
+            <div class="impact-value" id="precip-impact">+0%</div>
+            <canvas id="precip-scenario-chart"></canvas>
+          </div>
+          <div class="impact-card card">
+            <h3>🧊 Sea Ice Extent</h3>
+            <div class="impact-value" id="ice-impact">-0%</div>
+            <canvas id="ice-scenario-chart"></canvas>
+          </div>
+          <div class="impact-card card">
+            <h3>❄️ Permafrost Thaw</h3>
+            <div class="impact-value" id="permafrost-impact">0 cm</div>
+            <canvas id="permafrost-scenario-chart"></canvas>
+          </div>
+          <div class="impact-card card">
+            <h3>🏔️ Glacial Melt</h3>
+            <div class="impact-value" id="glacier-impact">-0%</div>
+            <div class="impact-description" id="glacier-desc">Glacier mass balance</div>
+          </div>
+          <div class="impact-card card">
+            <h3>🌊 Sea Level Rise</h3>
+            <div class="impact-value" id="sealevel-impact">+0 cm</div>
+            <div class="impact-description" id="sealevel-desc">Coastal impact zones</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Permafrost View -->
+      <section id="permafrost" class="view">
+        <div class="view-header">
+          <h2>Permafrost Monitoring</h2>
+          <p class="subtitle">Temperature and thaw data from monitoring stations</p>
+        </div>
+        <div class="content-grid">
+          <div class="map-container card">
+            <div id="permafrost-map"></div>
+          </div>
+          <div class="data-display card">
+            <h3>Monitoring Station Data</h3>
+            <div id="permafrost-data">Select a station on the map</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sea Ice View -->
+      <section id="sea-ice" class="view">
+        <div class="view-header">
+          <h2>Sea Ice Extent Tracker</h2>
+          <p class="subtitle">Arctic sea ice trends since 1979</p>
+        </div>
+
+        <!-- Toggle and Info Controls -->
+        <div class="sea-ice-controls card">
+          <div class="toggle-section">
+            <span class="toggle-label">Data View:</span>
+            <div class="toggle-buttons" id="sea-ice-toggle">
+              <button class="toggle-btn active" data-mode="september">
+                🌡️ September Min
+                <span class="tooltip" title="Annual minimum extent at the end of summer melt season">ⓘ</span>
+              </button>
+              <button class="toggle-btn" data-mode="march">
+                ❄️ March Max
+                <span class="tooltip" title="Annual maximum extent at the end of winter freeze">ⓘ</span>
+              </button>
+            </div>
+          </div>
+          <button class="info-toggle-btn" id="sea-ice-info-toggle">
+            📚 Why These Metrics? <span class="arrow">▼</span>
+          </button>
+        </div>
+
+        <!-- Expandable Info Section -->
+        <div class="info-section card" id="sea-ice-info-section" style="display: none;">
+          <div class="info-content">
+            <h4>🔬 Understanding Arctic Sea Ice Measurements</h4>
+            <div class="info-grid">
+              <div class="info-item">
+                <h5>🌡️ September Minimum</h5>
+                <p>September marks the <strong>end of the Arctic summer melt season</strong>. After months of continuous
+                  sunlight, sea ice reaches its lowest annual extent. Scientists use this as the primary climate
+                  indicator because:</p>
+                <ul>
+                  <li>Shows the strongest climate change signal</li>
+                  <li>Reveals cumulative summer melt effects</li>
+                  <li>Determines wildlife habitat and shipping routes</li>
+                  <li>Used by IPCC and NSIDC as the benchmark metric</li>
+                </ul>
+              </div>
+              <div class="info-item">
+                <h5>❄️ March Maximum</h5>
+                <p>March marks the <strong>end of the Arctic winter freeze season</strong>. After months of polar
+                  darkness, sea ice reaches its greatest annual extent. This metric shows:</p>
+                <ul>
+                  <li>Winter recovery capacity of the ice pack</li>
+                  <li>Has declined less dramatically than September</li>
+                  <li>Indicates multi-year ice formation potential</li>
+                  <li>Important for seasonal sea ice dynamics</li>
+                </ul>
+              </div>
+            </div>
+            <p class="info-note">💡 <strong>Tip:</strong> Comparing both metrics reveals that while Arctic ice still
+              recovers each winter, the summer minimums show accelerating decline—indicating the ice is becoming thinner
+              and younger on average.</p>
+          </div>
+        </div>
+
+        <div class="sea-ice-content">
+          <div class="chart-container card">
+            <h3 id="sea-ice-chart-title">September Minimum Sea Ice Extent</h3>
+            <canvas id="sea-ice-chart"></canvas>
+          </div>
+          <div class="sea-ice-stats card">
+            <h3>Current Statistics</h3>
+            <div id="sea-ice-stats">Loading...</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="attribution">
+          <h4>Data Sources</h4>
+          <p>Weather: NOAA National Weather Service | Historical: Alaska Climate Research Center (UAF)</p>
+          <p>Climate Projections: SNAP/ARDAC CMIP6 | Sea Ice: NSIDC | Permafrost: AWI/GTN-P</p>
+        </div>
+        <div class="footer-links">
+          <a href="https://weather.gov" target="_blank">NOAA</a>
+          <a href="https://akclimate.org" target="_blank">ACRC</a>
+          <a href="https://nsidc.org" target="_blank">NSIDC</a>
+          <a href="https://snap.uaf.edu" target="_blank">SNAP</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
