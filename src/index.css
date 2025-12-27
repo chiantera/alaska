@@ -643,6 +643,17 @@ input[type="range"]::-moz-range-thumb:hover {
   max-height: 400px;
 }
 
+/* Full-width chart for historical temperature */
+.chart-full-width {
+  width: 100%;
+  margin-bottom: var(--space-lg);
+}
+
+.chart-full-width canvas {
+  max-height: 500px;
+  height: 450px;
+}
+
 /* ===== PERMAFROST STATION DISPLAY ===== */
 .station-prompt {
   text-align: center;
@@ -1215,5 +1226,82 @@ input[type="range"]::-moz-range-thumb:hover {
 
   .impact-value {
     font-size: 2rem;
+  }
+}
+
+/* ===== VIEW HEADER ROW ===== */
+.view-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.view-header-row>div:first-child {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* ===== TEMPERATURE UNIT TOGGLE ===== */
+.temp-unit-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  background: rgba(0, 0, 0, 0.2);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--border-radius);
+  flex-shrink: 0;
+}
+
+.temp-unit-toggle .toggle-label {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.unit-toggle-buttons {
+  display: flex;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-sm);
+  padding: 2px;
+}
+
+.unit-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  padding: var(--space-xs) var(--space-md);
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: calc(var(--border-radius-sm) - 2px);
+  transition: all var(--transition-fast);
+  min-width: 42px;
+}
+
+.unit-btn:hover {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.unit-btn.active {
+  background: var(--color-accent);
+  color: var(--color-slate);
+  box-shadow: 0 2px 8px rgba(0, 230, 118, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .view-header-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .temp-unit-toggle {
+    align-self: center;
   }
 }

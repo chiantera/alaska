@@ -23,10 +23,13 @@ let charts = {};
 let currentScenario = 'SSP1-2.6';
 let customScenarioData = null;
 let animationInterval = null;
+let temperatureUnit = 'F'; // 'F' for Fahrenheit, 'C' for Celsius
+let lastWeatherData = null; // Store last weather data for re-rendering
 
 // Initialize app
 document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
+    initTemperatureToggle();
     initLiveWeather();
     initHistoricalView();
     initScenariosView();
@@ -38,6 +41,64 @@ document.addEventListener('DOMContentLoaded', () => {
         initWeatherMap();
     }, 100);
 });
+
+/**
+ * Temperature Unit Toggle
+ */
+function initTemperatureToggle() {
+    // Live Weather toggle
+    const liveToggle = document.getElementById('live-weather-temp-toggle');
+    if (liveToggle) {
+        liveToggle.querySelectorAll('.unit-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                setTemperatureUnit(btn.dataset.unit);
+            });
+        });
+    }
+
+    // Historical toggle
+    const historicalToggle = document.getElementById('historical-temp-toggle');
+    if (historicalToggle) {
+        historicalToggle.querySelectorAll('.unit-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                setTemperatureUnit(btn.dataset.unit);
+            });
+        });
+    }
+}
+
+function setTemperatureUnit(unit) {
+    temperatureUnit = unit;
+
+    // Update all toggle buttons to reflect current state
+    document.querySelectorAll('.temp-unit-toggle .unit-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.unit === unit);
+    });
+
+    // Re-render affected views
+    if (lastWeatherData) {
+        renderWeatherData(lastWeatherData);
+    }
+
+    // Re-render historical charts
+    updateHistoricalCharts();
+}
+
+// Temperature conversion helpers
+function celsiusToFahrenheit(c) {
+    return c * 9 / 5 + 32;
+}
+
+function fahrenheitToCelsius(f) {
+    return (f - 32) * 5 / 9;
+}
+
+function formatTemperature(tempC, includeDegree = true) {
+    if (tempC == null || isNaN(tempC)) return 'N/A';
+    const value = temperatureUnit === 'F' ? celsiusToFahrenheit(tempC) : tempC;
+    const symbol = includeDegree ? `°${temperatureUnit}` : '';
+    return `${value.toFixed(1)}${symbol}`;
+}
 
 /**
  * Navigation system
@@ -137,24 +198,40 @@ async function loadWeatherData(lat, lon) {
         if (weather.error) {
             currentEl.innerHTML = `<p style="color: var(--color-warning);">Unable to load weather data. ${weather.error}</p>`;
             forecastEl.innerHTML = '';
+            lastWeatherData = null;
             return;
         }
 
-        // Display current conditions
-        if (weather.current) {
-            const temp = weather.current.temperature?.value;
-            const tempF = temp != null ? (temp * 9 / 5 + 32).toFixed(1) : 'N/A';
-            const desc = weather.current.textDescription || 'No description';
-            const humidity = weather.current.relativeHumidity?.value != null
-                ? weather.current.relativeHumidity.value.toFixed(0)
-                : 'N/A';
-            const windSpeed = weather.current.windSpeed?.value;
-            const wind = windSpeed != null ? windSpeed.toFixed(1) : 'N/A';
+        // Store weather data for re-rendering on unit change
+        lastWeatherData = weather;
+        renderWeatherData(weather);
+    } catch (error) {
+        console.error('Error loading weather:', error);
+        currentEl.innerHTML = '<p style="color: var(--color-danger);">Error loading weather data</p>';
+        forecastEl.innerHTML = '';
+        lastWeatherData = null;
+    }
+}
 
-            currentEl.innerHTML = `
+function renderWeatherData(weather) {
+    const currentEl = document.getElementById('current-conditions');
+    const forecastEl = document.getElementById('forecast-display');
+
+    // Display current conditions
+    if (weather.current) {
+        const temp = weather.current.temperature?.value; // Celsius from API
+        const tempDisplay = formatTemperature(temp);
+        const desc = weather.current.textDescription || 'No description';
+        const humidity = weather.current.relativeHumidity?.value != null
+            ? weather.current.relativeHumidity.value.toFixed(0)
+            : 'N/A';
+        const windSpeed = weather.current.windSpeed?.value;
+        const wind = windSpeed != null ? windSpeed.toFixed(1) : 'N/A';
+
+        currentEl.innerHTML = `
         <div style="display: grid; gap: 1rem;">
           <div style="font-size: 3rem; font-weight: 700; color: var(--color-accent);">
-            ${tempF}°F
+            ${tempDisplay}
           </div>
           <div style="font-size: 1.2rem;">${desc}</div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
@@ -169,42 +246,53 @@ async function loadWeatherData(lat, lon) {
           </div>
         </div>
       `;
-        } else {
-            currentEl.innerHTML = '<p>Current conditions unavailable</p>';
-        }
+    } else {
+        currentEl.innerHTML = '<p>Current conditions unavailable</p>';
+    }
 
-        // Display forecast
-        if (weather.forecast && weather.forecast.length > 0) {
-            const forecastHTML = weather.forecast.slice(0, 7).map(period => `
+    // Display forecast
+    if (weather.forecast && weather.forecast.length > 0) {
+        const forecastHTML = weather.forecast.slice(0, 7).map(period => {
+            // Forecast temps from NWS are already in the user's preferred unit based on location
+            // But we need to convert if user wants different unit
+            let tempValue = period.temperature;
+            let displayUnit = temperatureUnit;
+
+            // NWS returns F for US locations - convert if needed
+            if (period.temperatureUnit === 'F' && temperatureUnit === 'C') {
+                tempValue = fahrenheitToCelsius(period.temperature).toFixed(0);
+            } else if (period.temperatureUnit === 'C' && temperatureUnit === 'F') {
+                tempValue = celsiusToFahrenheit(period.temperature).toFixed(0);
+            }
+
+            return `
         <div style="padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px; text-align: center;">
           <div style="font-weight: 600; margin-bottom: 0.5rem;">${period.name}</div>
           <div style="font-size: 1.5rem; color: var(--color-accent); margin: 0.5rem 0;">
-            ${period.temperature}°${period.temperatureUnit}
+            ${tempValue}°${displayUnit}
           </div>
           <div style="font-size: 0.85rem; color: var(--color-text-secondary);">
             ${period.shortForecast}
           </div>
         </div>
-      `).join('');
+      `;
+        }).join('');
 
-            forecastEl.innerHTML = `
+        forecastEl.innerHTML = `
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem;">
           ${forecastHTML}
         </div>
       `;
-        } else {
-            forecastEl.innerHTML = '<p>Forecast unavailable</p>';
-        }
-    } catch (error) {
-        console.error('Error loading weather:', error);
-        currentEl.innerHTML = '<p style="color: var(--color-danger);">Error loading weather data</p>';
-        forecastEl.innerHTML = '';
+    } else {
+        forecastEl.innerHTML = '<p>Forecast unavailable</p>';
     }
 }
 
 /**
  * Historical Weather View
  */
+let historicalChartParams = null; // Store for re-rendering
+
 function initHistoricalView() {
     const timeRangeSelect = document.getElementById('time-range');
     const stationSelect = document.getElementById('station-select');
@@ -221,24 +309,48 @@ function initHistoricalView() {
     timeRangeSelect.addEventListener('change', updateCharts);
     stationSelect.addEventListener('change', updateCharts);
 
-    // Load initial charts
-    loadHistoricalCharts('anchorage', 1974, 2024);
+    // Load initial charts - All Time by default (1949-2024)
+    loadHistoricalCharts('anchorage', 1949, 2024);
+}
+
+function updateHistoricalCharts() {
+    // Re-render historical charts if parameters exist
+    if (historicalChartParams) {
+        loadHistoricalCharts(
+            historicalChartParams.station,
+            historicalChartParams.startYear,
+            historicalChartParams.endYear
+        );
+    }
 }
 
 function loadHistoricalCharts(station, startYear, endYear) {
     const data = getHistoricalData(station, startYear, endYear);
 
+    // Store params for re-rendering on unit change
+    historicalChartParams = { station, startYear, endYear };
+
     // Destroy existing charts
     if (charts.tempChart) charts.tempChart.destroy();
-    if (charts.precipChart) charts.precipChart.destroy();
 
-    // Create new charts
-    charts.tempChart = createTemperatureChart('temp-chart', data.temperature, {
-        label: 'Annual Average Temperature (°F)'
-    });
+    // Convert temperature data based on selected unit
+    // Historical data is in Fahrenheit by default
+    let tempData = data.temperature;
+    let tempLabel = `Annual Average Temperature (°${temperatureUnit})`;
 
-    charts.precipChart = createPrecipitationChart('precip-chart', data.precipitation, {
-        label: 'Annual Precipitation (inches)'
+    if (temperatureUnit === 'C') {
+        // Convert F to C - data is an object with years as keys
+        tempData = {};
+        for (const year in data.temperature) {
+            tempData[year] = fahrenheitToCelsius(data.temperature[year]);
+        }
+    }
+
+    // Create temperature chart with trend line
+    charts.tempChart = createTemperatureChart('temp-chart', tempData, {
+        label: tempLabel,
+        unit: temperatureUnit,
+        showTrendLine: true
     });
 }
 

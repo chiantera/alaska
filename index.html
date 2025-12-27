@@ -120,8 +120,19 @@
       <!-- Live Weather View -->
       <section id="live-weather" class="view active">
         <div class="view-header">
-          <h2>Live Weather & Short-term Forecast</h2>
-          <p class="subtitle">Current conditions and 7-day forecasts across Alaska</p>
+          <div class="view-header-row">
+            <div>
+              <h2>Live Weather & Short-term Forecast</h2>
+              <p class="subtitle">Current conditions and 7-day forecasts across Alaska</p>
+            </div>
+            <div class="temp-unit-toggle" id="live-weather-temp-toggle">
+              <span class="toggle-label">Units:</span>
+              <div class="unit-toggle-buttons">
+                <button class="unit-btn active" data-unit="F">°F</button>
+                <button class="unit-btn" data-unit="C">°C</button>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="content-grid">
           <div class="map-container">
@@ -152,11 +163,23 @@
         </div>
       </section>
 
+
       <!-- Historical Weather View -->
       <section id="historical" class="view">
         <div class="view-header">
-          <h2>Historical Weather Trends (1949-Present)</h2>
-          <p class="subtitle">Compare past and present climate patterns</p>
+          <div class="view-header-row">
+            <div>
+              <h2>Historical Weather Trends (1949-Present)</h2>
+              <p class="subtitle">Compare past and present climate patterns</p>
+            </div>
+            <div class="temp-unit-toggle" id="historical-temp-toggle">
+              <span class="toggle-label">Units:</span>
+              <div class="unit-toggle-buttons">
+                <button class="unit-btn active" data-unit="F">°F</button>
+                <button class="unit-btn" data-unit="C">°C</button>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="controls card">
           <div class="control-group">
@@ -164,8 +187,8 @@
             <select id="time-range">
               <option value="10">Last 10 Years</option>
               <option value="25">Last 25 Years</option>
-              <option value="50" selected>Last 50 Years</option>
-              <option value="all">All Time (1949-Present)</option>
+              <option value="50">Last 50 Years</option>
+              <option value="all" selected>All Time (1949-Present)</option>
             </select>
           </div>
           <div class="control-group">
@@ -177,15 +200,9 @@
             </select>
           </div>
         </div>
-        <div class="charts-grid">
-          <div class="chart-container card">
-            <h3>Temperature Trends</h3>
-            <canvas id="temp-chart"></canvas>
-          </div>
-          <div class="chart-container card">
-            <h3>Precipitation Patterns</h3>
-            <canvas id="precip-chart"></canvas>
-          </div>
+        <div class="chart-container card chart-full-width">
+          <h3>Temperature Trends</h3>
+          <canvas id="temp-chart"></canvas>
         </div>
       </section>
 
